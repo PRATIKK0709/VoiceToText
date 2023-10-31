@@ -41,11 +41,11 @@ struct VoiceToText: View {
     @State private var recognitionTask: SFSpeechRecognitionTask?
 ```
 
-isRecording: A Boolean state that tracks whether the app is currently recording audio.
-recognizedText: A string state that holds the transcribed text.
-audioEngine: An optional AVAudioEngine instance that manages audio recording and playback.
-request: An optional SFSpeechAudioBufferRecognitionRequest used for speech recognition.
-transcripts: An array of strings to store recorded transcripts.
+isRecording: A Boolean state that tracks whether the app is currently recording audio.<br>
+recognizedText: A string state that holds the transcribed text.<br>
+audioEngine: An optional AVAudioEngine instance that manages audio recording and playback.<br>
+request: An optional SFSpeechAudioBufferRecognitionRequest used for speech recognition.<br>
+transcripts: An array of strings to store recorded transcripts.<br>
 recognitionTask: An optional SFSpeechRecognitionTask used to manage speech recognition.
 
 ```
@@ -95,6 +95,6 @@ A NavigationLink is used to navigate to another screen, likely for managing save
     }
 }
 ```
-The Spacer view helps center the content vertically within the VStack. The .navigationTitle modifier sets the navigation bar's title to "Voice to Text." The .onAppear modifier triggers two actions when the view appears: requesting speech recognition authorization and loading transcripts from user defaults.
+The Spacer view helps center the content vertically within the VStack. The .navigationTitle modifier sets the navigation bar's title to "Voice to Text." The .onAppear modifier triggers two actions when the view appears: requesting speech recognition authorization and loading transcripts from user defaults.<br>
 
 This VoiceToText view represents the main user interface for the app and provides functionality for recording, transcribing, saving, and managing transcripts. It appears within a navigation structure, making it part of a broader app interface.
