@@ -98,3 +98,26 @@ A NavigationLink is used to navigate to another screen, likely for managing save
 The Spacer view helps center the content vertically within the VStack. The .navigationTitle modifier sets the navigation bar's title to "Voice to Text." The .onAppear modifier triggers two actions when the view appears: requesting speech recognition authorization and loading transcripts from user defaults.<br>
 
 This VoiceToText view represents the main user interface for the app and provides functionality for recording, transcribing, saving, and managing transcripts. It appears within a navigation structure, making it part of a broader app interface.
+
+```
+private var recordingButton: some View {
+```
+This line defines a private computed property called recordingButton. Computed properties are used to calculate values on the fly, and they can be used within SwiftUI views.
+
+```
+    Button(action: {
+        isRecording.toggle()
+        if isRecording {
+            startRecording()
+        } else {
+            stopRecording()
+        }
+    }) {
+```
+This part of the code creates a Button view. The button's behavior is defined by the provided closure in the action parameter. When the button is tapped, this closure is executed. In this case, it toggles the isRecording state, which controls whether the app is currently recording audio. If isRecording is true, it calls the startRecording() function, and if it's false, it calls the stopRecording() function.
+
+```
+        Label(isRecording ? "Stop Recording" : "Start Recording", systemImage: isRecording ? "stop.circle" : "mic.circle.fill")
+```
+Within the button, a Label view is used to display text and an associated system image based on the isRecording state. If isRecording is true, the label says "Stop Recording" and displays a stop icon ("stop.circle"). If isRecording is false, it says "Start Recording" and displays a microphone icon ("mic.circle.fill").
+
