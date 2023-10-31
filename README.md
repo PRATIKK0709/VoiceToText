@@ -214,3 +214,116 @@ recognitionTask = SFSpeechRecognizer()?.recognitionTask(with: request!) { result
 catch { ... }: If an error occurs during the setup or recording process, it is caught and printed as an error message.<br>
 
 In summary, startRecording() sets up the audio engine, request, and recognition task to capture and transcribe spoken words in real-time. It continuously appends audio data to the recognition request, updating the recognized text until the recording is stopped or an error occurs.
+
+```
+    private func stopRecording() {
+        audioEngine?.stop()
+        request?.endAudio()
+        recognitionTask?.cancel()
+        recognitionTask = nil // Set it to nil to allow a new recognition task
+    }
+```
+audioEngine?.stop(): This line stops the audio engine (AVAudioEngine). It halts the audio recording process, effectively silencing the microphone.<br>
+
+request?.endAudio(): It marks the end of the audio data in the recognition request (SFSpeechAudioBufferRecognitionRequest). This is important for signaling the completion of audio data input for the recognition task.<br> 
+
+recognitionTask?.cancel(): The code cancels the speech recognition task (SFSpeechRecognitionTask). This means that any ongoing recognition process is terminated.<br>
+
+recognitionTask = nil: After canceling the recognition task, this line sets the recognition task to nil. This step is crucial because it allows the application to start a new recognition task if needed. Setting it to nil ensures that the task is not ongoing, and a new one can be created. <br>
+
+In summary, stopRecording() is a function that cleanly stops the audio recording and speech recognition process. It ensures that the audio engine is stopped, the recognition request is marked as complete, and any ongoing recognition task is canceled. It also prepares the app for a fresh start if further recognition is required.
+
+```
+    private func saveTranscript() {
+        if !recognizedText.isEmpty && !isRecording {
+            transcripts.append(recognizedText)
+            recognizedText = ""
+            saveTranscriptsToUserDefaults()
+        }
+    }
+```
+The `saveTranscript()` function is used to save transcribed text. It checks if the `recognizedText` is not empty and the app is not currently recording. If both conditions are met, it appends the transcribed text to the `transcripts` array, clears the `recognizedText`, and saves the updated transcript list to UserDefaults. This function effectively saves transcriptions when recording is not in progress and there is transcribed content to save.
+
+```
+ private func saveTranscriptsToUserDefaults() {
+        UserDefaults.standard.set(transcripts, forKey: "TranscriptsKey")
+    }
+```
+The saveTranscriptsToUserDefaults() function is responsible for saving the transcripts array to the UserDefaults data storage. It uses the UserDefaults standard user defaults storage to store the transcripts array under the key "TranscriptsKey." This allows the app to persistently store and retrieve the list of transcriptions even after the app is closed and reopened.
+
+```
+    private func loadTranscriptsFromUserDefaults() {
+        if let loadedTranscripts = UserDefaults.standard.stringArray(forKey: "TranscriptsKey") {
+            transcripts = loadedTranscripts
+        }
+    }
+}
+```
+This function loads previously saved transcripts from UserDefaults and assigns them to the app's `transcripts` array if they exist.
+
+```
+struct PrimaryButtonStyle: ButtonStyle {
+    let isDisabled: Bool
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(isDisabled ? Color.gray : Color.blue)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .opacity(isDisabled ? 0.5 : 1.0)
+            .disabled(isDisabled)
+    }
+}
+```
+
+`PrimaryButtonStyle` is a custom SwiftUI button style. It determines the appearance and behavior of buttons. The `isDisabled` parameter controls the style based on whether the button is disabled. The style includes features like background color, corner radius, and opacity, and it adapts to the button's disabled state.
+
+```
+struct TranscriptListView: View {
+    @Binding var transcripts: [String]
+    var saveFunction: () -> Void
+    var loadFunction: () -> Void
+
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(transcripts, id: \.self) { transcript in
+                    Text(transcript)
+                }
+                .onDelete(perform: deleteTranscript)
+            }
+            .navigationTitle("Transcripts")
+            .toolbar {
+                EditButton()
+            }
+        }
+    }
+```
+
+TranscriptListView is a SwiftUI view that displays a list of transcripts. It's equipped with:<br>
+
+A @Binding property that allows external changes to the transcripts array.<br>
+A list of transcripts using a ForEach loop.<br>
+An "Edit" button in the navigation toolbar for managing the list. <br>
+The ability to delete transcripts using the onDelete modifier.<br>
+A navigation title "Transcripts" displayed at the top.<br>
+
+```
+ private func deleteTranscript(offset: IndexSet) {
+        transcripts.remove(atOffsets: offset)
+        saveFunction() 
+    }
+}
+```
+The `deleteTranscript()` function removes transcripts at specified `offsets` from the `transcripts` array and then calls the `saveFunction()` to save the updated list.
+
+```
+struct VoiceToText_Previews: PreviewProvider {
+    static var previews: some View {
+        VoiceToText()
+    }
+}
+```
+`VoiceToText_Previews` is a SwiftUI preview provider used for generating a preview of the `VoiceToText` view. It enables developers to see how the view looks and behaves during the design and development process.
