@@ -129,3 +129,88 @@ Within the button, a Label view is used to display text and an associated system
 The buttonStyle modifier applies a custom button style called PrimaryButtonStyle to the button. It also sets the isDisabled parameter of the style to false, which means the button is enabled.
 
 In summary, the recordingButton is a SwiftUI view element, represented as a button. When tapped, it toggles between starting and stopping audio recording in the VoiceToText app, and its appearance and behavior change based on the isRecording state
+
+```
+   private var saveTranscriptButton: some View {
+        Button(action: {
+            saveTranscript()
+        }) {
+            Label("Save Transcript", systemImage: "square.and.arrow.up")
+                .buttonStyle(PrimaryButtonStyle(isDisabled: isRecording))
+        }
+    }
+```
+The code defines a SwiftUI button called saveTranscriptButton. When tapped, it triggers the saveTranscript() function. The button displays the text "Save Transcript" along with a square-and-arrow-up icon. Its appearance and behavior are determined by the PrimaryButtonStyle, which considers the isRecording state. If recording is in progress, the button is disabled.
+
+```
+   private func requestSpeechAuthorization() {
+        SFSpeechRecognizer.requestAuthorization { status in
+            if status == .authorized {
+                audioEngine = AVAudioEngine()
+                request = SFSpeechAudioBufferRecognitionRequest()
+            }
+        }
+    }
+```
+
+SFSpeechRecognizer.requestAuthorization { status in: This line initiates a request for speech recognition authorization. The code inside the closure { status in ... } will be executed once the authorization request is completed.<br>
+
+if status == .authorized {: This condition checks if the authorization status is "authorized," which means the user has granted permission for speech recognition.
+audioEngine = AVAudioEngine(): If authorization is granted, an AVAudioEngine instance is created. This engine is used to manage audio input and output.<br>
+
+request = SFSpeechAudioBufferRecognitionRequest(): In addition to the audio engine, a SFSpeechAudioBufferRecognitionRequest is initialized. This request object is used for real-time audio recognition.<br>
+
+In summary, requestSpeechAuthorization() handles the process of requesting speech recognition authorization. If authorization is given, it sets up the necessary audio components, enabling the app to start recognizing and transcribing speech.
+
+```
+    private func startRecording() {
+        if recognitionTask == nil {
+            do {
+                audioEngine = AVAudioEngine()
+                request = SFSpeechAudioBufferRecognitionRequest()
+                let node = audioEngine?.inputNode
+                let recordingFormat = node?.outputFormat(forBus: 0)
+
+                node?.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
+                    request?.append(buffer)
+                }
+
+                audioEngine?.prepare()
+                try audioEngine?.start()
+
+                recognitionTask = SFSpeechRecognizer()?.recognitionTask(with: request!) { result, error in
+                    if let result = result {
+                        recognizedText = result.bestTranscription.formattedString
+                    }
+                    if error != nil || result?.isFinal == true {
+                        stopRecording()
+                    }
+                }
+            } catch {
+                print("Error starting recording: \(error)")
+            }
+        }
+    }
+```
+
+if recognitionTask == nil {: This condition checks if there is no active speech recognition task. If there is none, it proceeds with starting the recording.
+do { ... } catch { ... }: This code block uses a do-catch statement to handle potential errors that may occur during the recording setup.<br>
+
+audioEngine = AVAudioEngine(): It initializes an AVAudioEngine instance. This engine is responsible for managing audio processing tasks, such as recording and playback.<br>
+
+request = SFSpeechAudioBufferRecognitionRequest(): A new SFSpeechAudioBufferRecognitionRequest is created. This request is used to capture and recognize audio input.<br>
+
+let node = audioEngine?.inputNode: It obtains the input node from the audio engine. The input node represents the device's microphone.<br>
+
+let recordingFormat = node?.outputFormat(forBus: 0): The code determines the audio recording format based on the device's microphone.<br>
+
+node?.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in ... }: This line installs an audio tap on the input node. It captures audio data in chunks (buffers) and appends them to the SFSpeechAudioBufferRecognitionRequest.<br>
+
+audioEngine?.prepare(): The audio engine is prepared for recording.<br>
+
+try audioEngine?.start(): It attempts to start the audio engine, commencing the recording process.<br>
+
+recognitionTask = SFSpeechRecognizer()?.recognitionTask(with: request!) { result, error in ... }: A recognition task is created using the SFSpeechRecognizer. This task continuously processes audio data from the request object. If recognized speech is available, it updates the recognizedText state with the transcribed text. If an error occurs or the recognition is finalized (the speaker stops talking), it calls stopRecording() to terminate the recording.
+catch { ... }: If an error occurs during the setup or recording process, it is caught and printed as an error message.<br>
+
+In summary, startRecording() sets up the audio engine, request, and recognition task to capture and transcribe spoken words in real-time. It continuously appends audio data to the recognition request, updating the recognized text until the recording is stopped or an error occurs.
