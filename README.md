@@ -121,3 +121,11 @@ This part of the code creates a Button view. The button's behavior is defined by
 ```
 Within the button, a Label view is used to display text and an associated system image based on the isRecording state. If isRecording is true, the label says "Stop Recording" and displays a stop icon ("stop.circle"). If isRecording is false, it says "Start Recording" and displays a microphone icon ("mic.circle.fill").
 
+```
+            .buttonStyle(PrimaryButtonStyle(isDisabled: false))
+        }
+```
+
+The buttonStyle modifier applies a custom button style called PrimaryButtonStyle to the button. It also sets the isDisabled parameter of the style to false, which means the button is enabled.
+
+In summary, the recordingButton is a SwiftUI view element, represented as a button. When tapped, it toggles between starting and stopping audio recording in the VoiceToText app, and its appearance and behavior change based on the isRecording state
