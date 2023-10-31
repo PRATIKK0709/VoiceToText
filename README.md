@@ -21,13 +21,13 @@ struct VoiceToTextApp: App {
 }
 ```
 
-@main: This attribute indicates that `VoiceToTextApp` is the main entry point for the application. In SwiftUI, the `@main` attribute is used to designate the app's entry point.
+@main: This attribute indicates that `VoiceToTextApp` is the main entry point for the application. In SwiftUI, the `@main` attribute is used to designate the app's entry point. <br>
 
-struct VoiceToTextApp: App: This defines a struct named `VoiceToTextApp` that conforms to the `App` protocol. The `App` protocol is essential in SwiftUI to create and manage the structure of the application.
+struct VoiceToTextApp: App: This defines a struct named `VoiceToTextApp` that conforms to the `App` protocol. The `App` protocol is essential in SwiftUI to create and manage the structure of the application.<br>
 
-var body: some Scene { ... }: In SwiftUI, the `body` property is used to describe the structure of the app. Here, it defines a `Scene`, which is a fundamental concept in SwiftUI for building user interfaces.
+var body: some Scene { ... }: In SwiftUI, the `body` property is used to describe the structure of the app. Here, it defines a `Scene`, which is a fundamental concept in SwiftUI for building user interfaces.<br>
 
-WindowGroup { ... }: A `WindowGroup` represents the main application window. It's where the app's user interface is displayed.
+WindowGroup { ... }: A `WindowGroup` represents the main application window. It's where the app's user interface is displayed.<br>
 
 VoiceToText(): This line creates an instance of the `VoiceToText` view, which serves as the main content for the app. The `VoiceToText` view is where the user interacts with the voice-to-text functionality and other features of the app.
 
